@@ -1,0 +1,12 @@
+// stdlib.agx
+
+Template {
+    NOGEN = "true" // Don't generate code for this template
+}
+
+RedNode : Template {
+    Color = "red" 
+}
+
+
+

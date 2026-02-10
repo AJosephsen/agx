@@ -1,0 +1,22 @@
+
+Backend
+{
+    Framework = "Express.js";
+    Port = 5000;
+}
+
+Frontend
+{
+    Framework = "Vue.js";
+    Port = 3000;
+}
+
+Frontend -> Backend // this is not allowed as Backend is not a node but just a node definition.
+
+MyBackend : Backend
+{
+    //Framework = "Express.js"; // value is inherited from Backend node definition
+    Port = 6000; // value overrides the value in Backend node definition
+}
+
+MyBackend -> Frontend; // this is allowed as MyBackend is a node instance.

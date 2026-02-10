@@ -1,0 +1,34 @@
+// Node with attributes
+Node X {
+    Description = "X marks the spot"
+    Attribute = "Many attributes can be added ... and has the style  attr = val "
+    MaybeAllowNumbers = 200.3
+}
+
+// Test both quote styles
+Node Y {
+    SingleQuotes = 'This uses single quotes'
+    DoubleQuotes = "This uses double quotes"
+    Number = 42
+    Decimal = -3.14159
+    Flag = true
+}
+
+// Nested nodes with attributes
+Node Parent {
+    Owner = "TeamA"
+    Version = 1.0
+    
+    Node Child1 {
+        Type = "Database"
+        Port = 5432
+    }
+    
+    Node Child2 {
+        Type = 'Service'
+        Port = 8080
+    }
+}
+
+// Edges still work
+Parent.Child1 -> Parent.Child2
