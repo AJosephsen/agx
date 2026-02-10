@@ -1,0 +1,16 @@
+{
+    "projectName": "AchitectureGraph",
+    "languages": [
+        {
+            "id": "achitecture-graph",
+            "grammar": "src/achitecture-graph.langium",
+            "fileExtensions": [
+                "argx"
+            ],
+            "textMate": {
+                "out": "syntaxes/achitecture-graph.tmLanguage.json"
+            }
+        }
+    ],
+    "out": "src/generated"
+}
