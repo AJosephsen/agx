@@ -25,7 +25,7 @@ describe('Linking tests', () => {
 
     test('linking of greetings', async () => {
         document = await parse(`
-            person Langium
+            component Langium
             Hello Langium!
         `);
 
@@ -35,11 +35,74 @@ describe('Linking tests', () => {
             // and then evaluate the cross references we're interested in by checking
             //  the referenced AST element as well as for a potential error message;
             checkDocumentValid(document)
-                || document.parseResult.value.greetings.map(g => g.person.ref?.name || g.person.error?.message).join('\n')
+                || document.parseResult.value.greetings.map(g => g.component.ref?.name || g.component.error?.message).join('\n')
         ).toBe(s`
             Langium
         `);
     });
+
+    test('linking of greetings2', async () => {
+
+        document = await parse(`
+            component John
+            {
+                component Jane
+            }
+            Hello John!
+            Hello Jane!
+        `);
+
+        //assert
+        const model = document.parseResult.value;
+        expect(model.components).toHaveLength(1);
+        expect(model.greetings).toHaveLength(2);
+        expect(model.greetings[0].component.ref).toBe(model.components[0]);
+        expect(model.greetings[1].component.ref).toBe(model.components[0].components[0]);
+
+    });
+
+    
+    test('linking ', async () => {
+
+        document = await parse(`
+            component John
+            {
+                component Jane
+            }
+            Hello J!
+            Hello Jane!
+        `);
+
+        //assert
+        const model = document.parseResult.value;
+        expect(model.components).toHaveLength(1);
+        expect(model.greetings).toHaveLength(2);
+        //expect(model.greetings[0].component.ref).toBe(model.components[0]);
+        expect(model.greetings[1].component.ref).toBe(model.components[0].components[0]);
+
+    });
+
+    test('nested scope ', async () => {
+
+        document = await parse(`
+            component A
+            {
+                component B
+                
+            }
+            Hello A.B!
+        `);
+
+        //assert
+        const model = document.parseResult.value;
+        expect(model.components).toHaveLength(1);
+        expect(model.greetings).toHaveLength(1);
+        expect(model.greetings[0].component.ref).toBe(model.components[0].components[0]);
+//        expect(model.greetings[0].component.ref).toBe(model.components[0].components[0]);
+
+    });
+
+
 });
 
 function checkDocumentValid(document: LangiumDocument): string | undefined {
@@ -51,3 +114,4 @@ function checkDocumentValid(document: LangiumDocument): string | undefined {
         || !isModel(document.parseResult.value) && `Root AST object is a ${document.parseResult.value.$type}, expected a 'Model'.`
         || undefined;
 }
+

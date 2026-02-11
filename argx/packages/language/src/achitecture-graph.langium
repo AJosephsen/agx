@@ -1,13 +1,18 @@
 grammar AchitectureGraph
 
 entry Model:
-    (persons+=Person | greetings+=Greeting)*;
+    (components+=Component | greetings+=Greeting)*;
 
-Person:
-    'person' name=ID;
+Component:
+    'component' name=ID
+    ( '{' (components+=Component | greetings+=Greeting)* '}' )?
+;
 
 Greeting:
-    'Hello' person=[Person:ID] '!';
+    'Hello' component=[Component:QualifiedName] '!';
+
+QualifiedName returns string:
+    ID ('.' ID)*;
 
 hidden terminal WS: /\s+/;
 terminal ID: /[_a-zA-Z][\w_]*/;

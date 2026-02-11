@@ -1,6 +1,10 @@
 import type { ValidationAcceptor, ValidationChecks } from 'langium';
-import type { AchitectureGraphAstType, Person } from './generated/ast.js';
+import type { AchitectureGraphAstType, Component } from './generated/ast.js';
 import type { AchitectureGraphServices } from './achitecture-graph-module.js';
+
+const logValidation = (...message: Array<unknown>) => {
+    process.stderr.write(`[validator] ${message.join(' ')}\n`);
+};
 
 /**
  * Register custom validation checks.
@@ -9,9 +13,8 @@ export function registerValidationChecks(services: AchitectureGraphServices) {
     const registry = services.validation.ValidationRegistry;
     const validator = services.validation.AchitectureGraphValidator;
     const checks: ValidationChecks<AchitectureGraphAstType> = {
-        Person: [
-            validator.checkPersonStartsWithCapital,
-            validator.checkPersonIsNotMe
+        Component: [
+            validator.checkComponentStartsWithCapital
         ]
     };
     registry.register(checks, validator);
@@ -22,22 +25,15 @@ export function registerValidationChecks(services: AchitectureGraphServices) {
  */
 export class AchitectureGraphValidator {
 
-    checkPersonStartsWithCapital(person: Person, accept: ValidationAcceptor): void {
-        if (person.name) {
-            const firstChar = person.name.substring(0, 1);
+    checkComponentStartsWithCapital(component: Component, accept: ValidationAcceptor): void {
+        logValidation('Checking capital rule for', component.name ?? '<unknown>');
+        if (component.name) {
+            const firstChar = component.name.substring(0, 1);
             if (firstChar.toUpperCase() !== firstChar) {
-                accept('warning', 'Person name should start with a capital.', { node: person, property: 'name' });
+                logValidation('Capital rule triggered for', component.name);
+                accept('warning', 'Component name should start with a capital.', { node: component, property: 'name' });
             }
         }
     }
-    checkPersonIsNotMe(person: Person, accept: ValidationAcceptor): void {
-        if (person.name) {
-            const pre = person.name.substring(0, 2);
-            if (pre.toLowerCase() === 'me') {
-                accept('warning', 'Person name should not start with "Me".', { node: person, property: 'name' });
-            }
-        }
-    }
-
 
 }

@@ -23,7 +23,7 @@ describe('Validating', () => {
 
     test('check no errors', async () => {
         document = await parse(`
-            person Langium
+            component Langium
         `);
 
         expect(
@@ -37,7 +37,7 @@ describe('Validating', () => {
 
     test('check capital letter validation', async () => {
         document = await parse(`
-            person langium
+            component langium
         `);
 
         expect(
@@ -45,25 +45,11 @@ describe('Validating', () => {
         ).toEqual(
             // 'expect.stringContaining()' makes our test robust against future additions of further validation rules
             expect.stringContaining(s`
-                [1:19..1:26]: Person name should start with a capital.
+                [1:22..1:29]: Component name should start with a capital.
             `)
         );
     });
 
-        test('check "Me" prefix validation', async () => {
-        document = await parse(`
-            person MeLangium
-        `);
-
-        expect(
-            checkDocumentValid(document) || document?.diagnostics?.map(diagnosticToString)?.join('\n')
-        ).toEqual(
-            // 'expect.stringContaining()' makes our test robust against future additions of further validation rules
-            expect.stringContaining(s`
-                [1:19..1:28]: Person name should not start with "Me".
-            `)
-        );
-    });
 
 });
 

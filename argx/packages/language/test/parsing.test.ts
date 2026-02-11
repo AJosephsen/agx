@@ -21,7 +21,7 @@ describe('Parsing tests', () => {
 
     test('parse simple Model', async () => {
         document = await parse(`
-            person Langium
+            component Langium
             Hello Langium!
         `);
 
@@ -35,13 +35,13 @@ describe('Parsing tests', () => {
             // prior to the tagged template expression we check for validity of the parsed document object
             //  by means of the reusable function 'checkDocumentValid()' to sort out (critical) typos first;
             checkDocumentValid(document) || s`
-                Persons:
-                  ${document.parseResult.value?.persons?.map(p => p.name)?.join('\n  ')}
+                Components:
+                  ${document.parseResult.value?.components?.map(c => c.name)?.join('\n  ')}
                 Greetings to:
-                  ${document.parseResult.value?.greetings?.map(g => g.person.$refText)?.join('\n  ')}
+                  ${document.parseResult.value?.greetings?.map(g => g.component.$refText)?.join('\n  ')}
             `
         ).toBe(s`
-            Persons:
+            Components:
               Langium
             Greetings to:
               Langium

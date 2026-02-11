@@ -1,12 +1,12 @@
 // Node with attributes
-Node X {
+X {
     Description = "X marks the spot"
     Attribute = "Many attributes can be added ... and has the style  attr = val "
     MaybeAllowNumbers = 200.3
 }
 
 // Test both quote styles
-Node Y {
+Y {
     SingleQuotes = 'This uses single quotes'
     DoubleQuotes = "This uses double quotes"
     Number = 42
@@ -15,16 +15,16 @@ Node Y {
 }
 
 // Nested nodes with attributes
-Node Parent {
+Parent {
     Owner = "TeamA"
     Version = 1.0
     
-    Node Child1 {
+    Child1 {
         Type = "Database"
         Port = 5432
     }
     
-    Node Child2 {
+    Child2 {
         Type = 'Service'
         Port = 8080
     }
