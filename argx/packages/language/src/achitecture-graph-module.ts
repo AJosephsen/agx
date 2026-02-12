@@ -1,8 +1,8 @@
 import { type Module, inject } from 'langium';
 import { createDefaultModule, createDefaultSharedModule, type DefaultSharedModuleContext, type LangiumServices, type LangiumSharedServices, type PartialLangiumServices } from 'langium/lsp';
-import { AchitectureGraphGeneratedModule, AchitectureGraphGeneratedSharedModule } from './generated/module.js';
+import { ArchitecturegraphsGeneratedModule, AchitectureGraphGeneratedSharedModule } from './generated/module.js';
 import { AchitectureGraphValidator, registerValidationChecks } from './achitecture-graph-validator.js';
-import {HelloWorldScopeProvider} from './architecture-graph-scopes.js';
+import {NodeReferenceScopeProvider} from './architecture-graph-scopes.js';
 /**
  * Declaration of custom services - add your own service classes here.
  */
@@ -28,7 +28,7 @@ export const AchitectureGraphModule: Module<AchitectureGraphServices, PartialLan
         AchitectureGraphValidator: () => new AchitectureGraphValidator()
     },
     references: {
-        ScopeProvider: (services) => new HelloWorldScopeProvider(services)
+        ScopeProvider: (services) => new NodeReferenceScopeProvider(services)
     }
     
 };
@@ -58,7 +58,7 @@ export function createAchitectureGraphServices(context: DefaultSharedModuleConte
     );
     const AchitectureGraph = inject(
         createDefaultModule({ shared }),
-        AchitectureGraphGeneratedModule,
+        ArchitecturegraphsGeneratedModule,
         AchitectureGraphModule
     );
     shared.ServiceRegistry.register(AchitectureGraph);

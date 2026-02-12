@@ -1,5 +1,5 @@
 import type { Model } from 'achitecture-graph-language';
-import { createAchitectureGraphServices, AchitectureGraphLanguageMetaData } from 'achitecture-graph-language';
+import { createAchitectureGraphServices, ArchitecturegraphsLanguageMetaData } from 'achitecture-graph-language';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import { extractAstNode } from './util.js';
@@ -29,7 +29,7 @@ export default function(): void {
 
     program.version(JSON.parse(packageContent).version);
 
-    const fileExtensions = AchitectureGraphLanguageMetaData.fileExtensions.join(', ');
+    const fileExtensions = ArchitecturegraphsLanguageMetaData.fileExtensions.join(', ');
     program
         .command('generate')
         .argument('<file>', `source file (possible file extensions: ${fileExtensions})`)

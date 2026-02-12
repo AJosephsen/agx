@@ -23,10 +23,11 @@ afterEach(async () => {
 
 describe('Linking tests', () => {
 
-    test('linking of greetings', async () => {
+    test('linking of node to type', async () => {
         document = await parse(`
-            component Langium
-            Hello Langium!
+            type Langium;
+            person user;
+            user -> user;
         `);
 
         expect(
@@ -35,13 +36,13 @@ describe('Linking tests', () => {
             // and then evaluate the cross references we're interested in by checking
             //  the referenced AST element as well as for a potential error message;
             checkDocumentValid(document)
-                || document.parseResult.value.greetings.map(g => g.component.ref?.name || g.component.error?.message).join('\n')
+                || document.parseResult.value.edges.map(g => g.source.ref?.name || g.source.error?.message).join('\n')
         ).toBe(s`
-            Langium
+            user
         `);
     });
 
-    test('linking of greetings2', async () => {
+    test('linking of edges2', async () => {
 
         document = await parse(`
             component John
@@ -54,10 +55,10 @@ describe('Linking tests', () => {
 
         //assert
         const model = document.parseResult.value;
-        expect(model.components).toHaveLength(1);
-        expect(model.greetings).toHaveLength(2);
-        expect(model.greetings[0].component.ref).toBe(model.components[0]);
-        expect(model.greetings[1].component.ref).toBe(model.components[0].components[0]);
+        expect(model.nodes).toHaveLength(1);
+        expect(model.edges).toHaveLength(2);
+        expect(model.edges[0].source.ref).toBe(model.nodes[0]);
+        expect(model.edges[1].source.ref).toBe(model.nodes[0].nodes[0]);
 
     });
 
@@ -75,32 +76,14 @@ describe('Linking tests', () => {
 
         //assert
         const model = document.parseResult.value;
-        expect(model.components).toHaveLength(1);
-        expect(model.greetings).toHaveLength(2);
+        expect(model.types).toHaveLength(1);
+        expect(model.nodes).toHaveLength(1);
+        expect(model.edges).toHaveLength(1);
         //expect(model.greetings[0].component.ref).toBe(model.components[0]);
-        expect(model.greetings[1].component.ref).toBe(model.components[0].components[0]);
+        //expect(model.edges[1].component.ref).toBe(model.components[0].components[0]);
 
     });
 
-    test('nested scope ', async () => {
-
-        document = await parse(`
-            component A
-            {
-                component B
-                
-            }
-            Hello A.B!
-        `);
-
-        //assert
-        const model = document.parseResult.value;
-        expect(model.components).toHaveLength(1);
-        expect(model.greetings).toHaveLength(1);
-        expect(model.greetings[0].component.ref).toBe(model.components[0].components[0]);
-//        expect(model.greetings[0].component.ref).toBe(model.components[0].components[0]);
-
-    });
 
 
 });

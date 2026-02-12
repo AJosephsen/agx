@@ -1,23 +1,29 @@
-grammar AchitectureGraph
+grammar Architecturegraphs
 
-entry Model:
-    (components+=Component | greetings+=Greeting)*;
+entry Model: (attributes+=Attribute | types+=AType | nodes+=ANode | edges+=AEdge)*;
 
-Component:
-    'component' name=ID
-    ( '{' (components+=Component | greetings+=Greeting)* '}' )?
-;
+AType:
+  'type' name=ID (':' supers+=[AType:QualifiedName] )?
+  ( '{' (attributes+=Attribute )* '}' | ';' );
 
-Greeting:
-    'Hello' component=[Component:QualifiedName] '!';
+ANode:
+  kind=[AType:QualifiedName] name=ID
+  ( '{' (attributes+=Attribute | nodes+=ANode | edges+=AEdge)* '}' | ';' );
 
-QualifiedName returns string:
-    ID ('.' ID)*;
+AEdge:
+  source=[ANode:QualifiedName] '->' target=[ANode:QualifiedName]
+  (':' kind=[AType:QualifiedName])?
+  ';'?;
 
-hidden terminal WS: /\s+/;
+QualifiedName returns string: ID ('.' ID)*;
+
+Attribute: name=ID '=' value=(STRING | NUMBER | BOOLEAN) ';'?;
+
+terminal STRING: /"[^"]*"|'[^']*'/;
+terminal NUMBER: /-?[0-9]+(\.[0-9]+)?/;
+terminal BOOLEAN: /true|false/;
 terminal ID: /[_a-zA-Z][\w_]*/;
-terminal INT returns number: /[0-9]+/;
-terminal STRING: /"(\\.|[^"\\])*"|'(\\.|[^'\\])*'/;
 
+hidden terminal WS: /[ \t\r\n]+/;
 hidden terminal ML_COMMENT: /\/\*[\s\S]*?\*\//;
 hidden terminal SL_COMMENT: /\/\/[^\n\r]*/;

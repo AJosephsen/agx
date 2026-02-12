@@ -21,8 +21,9 @@ describe('Parsing tests', () => {
 
     test('parse simple Model', async () => {
         document = await parse(`
-            component Langium
-            Hello Langium!
+            type person;
+            person user;
+            user -> user;
         `);
 
         // check for absence of parser errors the classic way:
@@ -35,15 +36,20 @@ describe('Parsing tests', () => {
             // prior to the tagged template expression we check for validity of the parsed document object
             //  by means of the reusable function 'checkDocumentValid()' to sort out (critical) typos first;
             checkDocumentValid(document) || s`
-                Components:
-                  ${document.parseResult.value?.components?.map(c => c.name)?.join('\n  ')}
-                Greetings to:
-                  ${document.parseResult.value?.greetings?.map(g => g.component.$refText)?.join('\n  ')}
+                Nodes:
+                  ${document.parseResult.value?.nodes?.map(c => c.name)?.join('\n  ')}
+                Edges from:
+                  ${document.parseResult.value?.edges?.map(g => g.source.$refText)?.join('\n  ')}
+                Edges to:
+                  ${document.parseResult.value?.edges?.map(g => g.target.$refText)?.join('\n  ')}
+
             `
         ).toBe(s`
-            Components:
+            Nodes:
+              user
+            Edges from:
               Langium
-            Greetings to:
+            Edges to:
               Langium
         `);
     });

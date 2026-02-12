@@ -1,24 +1,42 @@
 import { ReferenceInfo, Scope, ScopeProvider, AstUtils, LangiumCoreServices, AstNodeDescriptionProvider, MapScope, EMPTY_SCOPE } from "langium";
-import { isGreeting, isModel, Component } from "./generated/ast.js";
+import {  isModel, isANode, ANode, isAEdge } from "./generated/ast.js";
+
+
+// refactoring component to node ... and greeting to edge
 
 
 const logValidation = (...message: Array<unknown>) => {
     process.stderr.write(`[scope provider] ${message.join(' ')}\n`);
 };
 
-export class HelloWorldScopeProvider implements ScopeProvider {
+export class NodeReferenceScopeProvider implements ScopeProvider {
     private astNodeDescriptionProvider: AstNodeDescriptionProvider;
     constructor(services: LangiumCoreServices) {
         //get some helper services
         this.astNodeDescriptionProvider = services.workspace.AstNodeDescriptionProvider;
     }
+
     getScope(context: ReferenceInfo): Scope {
         logValidation('Getting scope for', context.container.$type, 'property', context.property);
         //make sure which cross-reference you are handling right now
 
 
-        if (isGreeting(context.container) && context.property === 'component') {
-            //Success! We are handling the cross-reference of a greeting to a person!
+        // provide the scope for the kind of node (types)
+        if (isANode(context.container) && context.property === 'kind') 
+        {
+            const model = AstUtils.getContainerOfType(context.container, isModel)!;
+            const types =model.types;
+
+            const descriptions = Array.from(types.map(type => this.astNodeDescriptionProvider.createDescription(type, type.name)));
+             return new MapScope(descriptions);
+
+
+
+
+        }
+
+        // provide scope for the source of an edge 
+        if (isAEdge(context.container) && context.property === 'source') {
 
             // get the scope of the cross-reference - by finding the parrent node
             var parrent = context.container.$container;
@@ -28,20 +46,20 @@ export class HelloWorldScopeProvider implements ScopeProvider {
 
             //get the root node of the document
             const model = AstUtils.getContainerOfType(context.container, isModel)!;
-            //select all components from this document 
-            // this should be done recursively to also include components from nested structures, but for the sake of simplicity we just take the top-level ones here
-            const components = this.getAllComponents(model.components);
+            //select all nodes from this document 
+            // this should be done recursively to also include nodes from nested structures, but for the sake of simplicity we just take the top-level ones here
+            const nodes = this.getAllComponents(model.nodes);
             var reftext = context.reference.$refText;
-            logValidation('Available components are', components.map(c => c.name).join(', '), 'and we are looking for', reftext);
-            // filter the components to those that starts with the same text as the reference we are trying to resolve, this is important for performance reasons, especially if you have a large model
-            const filteredComponents = components.filter(c => c.name.startsWith(reftext));
+            logValidation('Available nodes are', nodes.map(c => c.name).join(', '), 'and we are looking for', reftext);
+            // filter the nodes to those that starts with the same text as the reference we are trying to resolve, this is important for performance reasons, especially if you have a large model
+            const filteredNodes = nodes.filter(c => c.name.startsWith(reftext));
 
             // create an empty list of AST node descriptions
 
             // should be a dictionary 
-            var scope = new Map<string, Component>();
+            var scope = new Map<string, ANode>();
 
-            const addChildrenToScope = (children: Component[], path: string): void => {
+            const addChildrenToScope = (children : ANode[], path: string): void => {
                 for (const child of children) {
                     const childPath = path ? `${path}.${child.name}` : child.name;
                     // if desc already contains a component with the same name, we skip it to avoid duplicates in the scope, this is important for performance reasons, especially if you have a large model with many nested components
@@ -51,15 +69,15 @@ export class HelloWorldScopeProvider implements ScopeProvider {
                         scope.set(childPath, child);
                       }
                     }
-                    if (child.components) {
-                        addChildrenToScope(child.components, childPath);
+                    if (child.nodes) {
+                        addChildrenToScope(child.nodes, childPath);
                     }
                 }
             };
 
-            addChildrenToScope(parrent.components, '');
+            addChildrenToScope(parrent.nodes, '');
             // add the filteredComponents to scope
-            for (const c of filteredComponents) {
+            for (const c of filteredNodes) {
                 if (!scope.has(c.name)) {
                     scope.set(c.name, c);
                 }
@@ -85,12 +103,12 @@ export class HelloWorldScopeProvider implements ScopeProvider {
     }
 
     // build a list recursively to include nested components as well
-    getAllComponents(cs: Component[]): Component[] {
-        let result: Component[] = [];
+    getAllComponents(cs: ANode[]): ANode[] {
+        let result: ANode[] = [];
         for (const c of cs) {
             result.push(c);
-            if (c.components) {
-                result = result.concat(this.getAllComponents(c.components));
+            if (c.nodes) {
+                result = result.concat(this.getAllComponents(c.nodes));
             }
         }
         return result;

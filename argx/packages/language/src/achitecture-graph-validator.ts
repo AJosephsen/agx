@@ -1,5 +1,5 @@
 import type { ValidationAcceptor, ValidationChecks } from 'langium';
-import type { AchitectureGraphAstType, Component } from './generated/ast.js';
+import type { AchitectureGraphAstType, ANode } from './generated/ast.js';
 import type { AchitectureGraphServices } from './achitecture-graph-module.js';
 
 const logValidation = (...message: Array<unknown>) => {
@@ -13,7 +13,7 @@ export function registerValidationChecks(services: AchitectureGraphServices) {
     const registry = services.validation.ValidationRegistry;
     const validator = services.validation.AchitectureGraphValidator;
     const checks: ValidationChecks<AchitectureGraphAstType> = {
-        Component: [
+        ANode: [
             validator.checkComponentStartsWithCapital
         ]
     };
@@ -25,7 +25,7 @@ export function registerValidationChecks(services: AchitectureGraphServices) {
  */
 export class AchitectureGraphValidator {
 
-    checkComponentStartsWithCapital(component: Component, accept: ValidationAcceptor): void {
+    checkComponentStartsWithCapital(component: ANode, accept: ValidationAcceptor): void {
         logValidation('Checking capital rule for', component.name ?? '<unknown>');
         if (component.name) {
             const firstChar = component.name.substring(0, 1);

@@ -1,2 +1,23 @@
-person Alice
-person Bob
+type system; 
+type application; 
+type service; 
+type microservice:service; 
+type messaging;
+system CEPOS 
+{ 
+    application Risk; 
+    application Payments 
+    { 
+        service PaymentInitiaition; 
+        microservice Clearing; 
+        PaymentInitiaition -> Clearing : messaging;
+    } 
+    
+} 
+
+system Connect 
+{ 
+    application BCConnect; 
+} 
+Connect.BCConnect -> CEPOS.Payments.PaymentInitiaition;
+
