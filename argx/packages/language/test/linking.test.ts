@@ -45,44 +45,22 @@ describe('Linking tests', () => {
     test('linking of edges2', async () => {
 
         document = await parse(`
-            component John
-            {
-                component Jane
-            }
-            Hello John!
-            Hello Jane!
+            type Langium;
+            person Alice;
+            person Bob;
+            Alice -> Bob;
         `);
 
         //assert
         const model = document.parseResult.value;
-        expect(model.nodes).toHaveLength(1);
-        expect(model.edges).toHaveLength(2);
+        expect(model.nodes).toHaveLength(2);
+        expect(model.edges).toHaveLength(1);
         expect(model.edges[0].source.ref).toBe(model.nodes[0]);
-        expect(model.edges[1].source.ref).toBe(model.nodes[0].nodes[0]);
+        expect(model.edges[0].target.ref).toBe(model.nodes[1]);
 
     });
 
     
-    test('linking ', async () => {
-
-        document = await parse(`
-            component John
-            {
-                component Jane
-            }
-            Hello J!
-            Hello Jane!
-        `);
-
-        //assert
-        const model = document.parseResult.value;
-        expect(model.types).toHaveLength(1);
-        expect(model.nodes).toHaveLength(1);
-        expect(model.edges).toHaveLength(1);
-        //expect(model.greetings[0].component.ref).toBe(model.components[0]);
-        //expect(model.edges[1].component.ref).toBe(model.components[0].components[0]);
-
-    });
 
 
 

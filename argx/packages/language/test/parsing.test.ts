@@ -22,8 +22,9 @@ describe('Parsing tests', () => {
     test('parse simple Model', async () => {
         document = await parse(`
             type person;
-            person user;
-            user -> user;
+            person Alice;
+            person Bob;
+            Alice -> Bob;
         `);
 
         // check for absence of parser errors the classic way:
@@ -37,20 +38,20 @@ describe('Parsing tests', () => {
             //  by means of the reusable function 'checkDocumentValid()' to sort out (critical) typos first;
             checkDocumentValid(document) || s`
                 Nodes:
-                  ${document.parseResult.value?.nodes?.map(c => c.name)?.join('\n  ')}
+                  ${document.parseResult.value?.nodes?.map(c => c.name)?.join('\n')}
                 Edges from:
-                  ${document.parseResult.value?.edges?.map(g => g.source.$refText)?.join('\n  ')}
+                  ${document.parseResult.value?.edges?.map(g => g.source.$refText)?.join('\n')}
                 Edges to:
-                  ${document.parseResult.value?.edges?.map(g => g.target.$refText)?.join('\n  ')}
-
+                  ${document.parseResult.value?.edges?.map(g => g.target.$refText)?.join('\n')}
             `
         ).toBe(s`
             Nodes:
-              user
+              Alice
+              Bob
             Edges from:
-              Langium
+              Alice 
             Edges to:
-              Langium
+              Bob
         `);
     });
 });

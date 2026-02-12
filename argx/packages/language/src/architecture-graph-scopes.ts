@@ -28,7 +28,7 @@ export class NodeReferenceScopeProvider implements ScopeProvider {
             const types =model.types;
 
             const descriptions = Array.from(types.map(type => this.astNodeDescriptionProvider.createDescription(type, type.name)));
-             return new MapScope(descriptions);
+            return new MapScope(descriptions);
 
 
 
@@ -36,7 +36,7 @@ export class NodeReferenceScopeProvider implements ScopeProvider {
         }
 
         // provide scope for the source of an edge 
-        if (isAEdge(context.container) && context.property === 'source') {
+        if (isAEdge(context.container) && (context.property === 'source' || context.property === 'target')) {
 
             // get the scope of the cross-reference - by finding the parrent node
             var parrent = context.container.$container;

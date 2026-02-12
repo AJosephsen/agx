@@ -23,7 +23,7 @@ describe('Validating', () => {
 
     test('check no errors', async () => {
         document = await parse(`
-            component Langium
+            type Langium;
         `);
 
         expect(
@@ -37,7 +37,7 @@ describe('Validating', () => {
 
     test('check capital letter validation', async () => {
         document = await parse(`
-            component langium
+            type langium;
         `);
 
         expect(
@@ -45,7 +45,7 @@ describe('Validating', () => {
         ).toEqual(
             // 'expect.stringContaining()' makes our test robust against future additions of further validation rules
             expect.stringContaining(s`
-                [1:22..1:29]: Component name should start with a capital.
+                [1:17..1:24]: Type name should start with a capital.
             `)
         );
     });
