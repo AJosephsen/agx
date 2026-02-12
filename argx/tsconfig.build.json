@@ -12,6 +12,12 @@
         },
         {
             "path": "./packages/extension/tsconfig.json"
+        },
+        {
+            "path": "./packages/agx-util/tsconfig.src.json"
+        },
+        {
+            "path": "./packages/agx-util/tsconfig.test.json"
         }
     ]
 }
