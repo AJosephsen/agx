@@ -1,5 +1,5 @@
 import { ReferenceInfo, Scope, ScopeProvider, AstUtils, LangiumCoreServices, AstNodeDescriptionProvider, MapScope, EMPTY_SCOPE } from "langium";
-import {  isModel, isANode, ANode, isAEdge } from "./generated/ast.js";
+import {  isModel, isANode, ANode, isAEdge, isAType } from "./generated/ast.js";
 
 
 // refactoring component to node ... and greeting to edge
@@ -96,6 +96,20 @@ export class NodeReferenceScopeProvider implements ScopeProvider {
             //create the scope                   
             return new MapScope(descriptions);
         }
+        // provide scope for type supers (resolves to all types in the model)
+        if (isAType(context.container) && context.property === 'supers') {
+            const model = AstUtils.getContainerOfType(context.container, isModel)!;
+            const descriptions = model.types.map(type => this.astNodeDescriptionProvider.createDescription(type, type.name));
+            return new MapScope(descriptions);
+        }
+
+        // provide scope for edge kind (resolves to all types in the model)
+        if (isAEdge(context.container) && context.property === 'kind') {
+            const model = AstUtils.getContainerOfType(context.container, isModel)!;
+            const descriptions = model.types.map(type => this.astNodeDescriptionProvider.createDescription(type, type.name));
+            return new MapScope(descriptions);
+        }
+
         logValidation('No specific scope found for', context.container.$type, 'property', context.property, 'returning empty scope');
         return EMPTY_SCOPE;
 
