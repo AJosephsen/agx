@@ -1,5 +1,5 @@
 import type { ValidationAcceptor, ValidationChecks } from 'langium';
-import type { AchitectureGraphAstType, ANode, AType } from './generated/ast.js';
+import type { AchitectureGraphAstType, AType } from './generated/ast.js';
 import type { AchitectureGraphServices } from './achitecture-graph-module.js';
 
 const logValidation = (...message: Array<unknown>) => {

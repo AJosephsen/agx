@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+  <AType name="System" />
+  <AType name="Application" />
+  <ANode name="CEPOS" kind="System">
+    <Attribute name="version" value="1.0" />
+    <Attribute name="owner" value="Engineering" />
+    <ANode name="Payments" kind="Application">
+      <Attribute name="environment" value="production" />
+      <Attribute name="port" value="8080" />
+    </ANode>
+  </ANode>
+</Model>

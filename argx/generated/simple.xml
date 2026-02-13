@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Model>
+  <AType name="System" />
+  <AType name="Application" />
+  <AType name="Service" />
+  <ANode name="CEPOS" kind="System">
+    <ANode name="Risk" kind="Application" />
+    <ANode name="Payments" kind="Application">
+      <ANode name="PaymentInitiation" kind="Service" />
+      <ANode name="Clearing" kind="Service" />
+      <AEdge source="PaymentInitiation" target="Clearing" />
+    </ANode>
+  </ANode>
+  <ANode name="Connect" kind="System">
+    <ANode name="BCConnect" kind="Application" />
+  </ANode>
+  <AEdge source="BCConnect" target="PaymentInitiation" />
+</Model>

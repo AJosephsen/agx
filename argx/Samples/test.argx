@@ -1,0 +1,23 @@
+type System;
+type Application;
+type Service;
+type Microservice : Service;
+type Messaging;
+
+System CEPOS
+{
+    version = "1.0";
+    Application Risk;
+    Application Payments
+    {
+        Service PaymentInitiation;
+        Microservice Clearing;
+        PaymentInitiation -> Clearing : Messaging;
+    }
+}
+
+System Connect
+{
+    Application BCConnect;
+}
+Connect.BCConnect -> CEPOS.Payments.PaymentInitiation;

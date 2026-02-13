@@ -1,0 +1,13 @@
+type System;
+type Application;
+
+System CEPOS
+{
+    version = "1.0";
+    owner = "Engineering";
+    Application Payments
+    {
+        environment = "production";
+        port = 8080;
+    }
+}
